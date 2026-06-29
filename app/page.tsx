@@ -75,13 +75,11 @@ export default function Home() {
           </div>
 
           {/* Logo preview */}
-          <div
-            className="text-5xl bg-neutral-content/10 hover:bg-neutral-content/20 aspect-square border-2 border-base-300 hover:border-neutral/15 border-dashed p-5 md:p-13"
-            style={{ borderRadius: `${radius}px` }}
-          >
+          <div className="text-5xl bg-neutral-content/10 hover:bg-neutral-content/20 aspect-square border-2 border-base-300 hover:border-neutral/15 border-dashed p-5 md:p-13">
             <div
               id="iconContainer"
               className={`w-112.5 h-112.5 flex justify-center items-center ${shadow}`}
+              style={{ borderRadius: `${radius}px` }}
             >
               {SelectedIconComponent && (
                 <SelectedIconComponent
