@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import IconPicker from "./components/IconPicker";
 import { Download, icons } from "lucide-react";
+import ColorPicker from "./components/ColorPicker";
 
 type IconName = keyof typeof icons;
 
@@ -13,12 +14,18 @@ export default function Home() {
     selectedIcon && icons[selectedIcon as IconName]
       ? icons[selectedIcon as IconName]
       : null;
-  const [iconSize, setIconSize] = useState<number>(200);
-  const [iconStrokeWidth, setIconStrokeWidth] = useState<number>(3);
+  const [iconSize, setIconSize] = useState<number>(220);
+  const [iconStrokeWidth, setIconStrokeWidth] = useState<number>(1);
   const [iconRotation, setIconRotation] = useState<number>(0);
   const [shadow, setShadow] = useState<string>("shadow-none");
   const [shadowNumber, setShadowNumber] = useState<number>(0);
   const [radius, setRadius] = useState<number>(12);
+  const [activeTab, setActiveTab] = useState<"stroke" | "background" | "fill">(
+    "stroke",
+  );
+  const [iconStrokeColor, setIconStrokeColor] = useState<string>("#260707");
+  const [backgroundColor, setBackgroundColor] = useState<string>("#535F78");
+  const [fillColor, setFillColor] = useState<string>("#DEDEDE");
 
   const handleShadowNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -47,6 +54,61 @@ export default function Home() {
   return (
     <div>
       <section className="flex flex-col md:flex-row md:justify-between">
+        <div className="md:w-1/4 p-5">
+          <div className="flex items-center justify-center space-x-2 w-full mb-5">
+            <button
+              className={`btn w-1/3 ${activeTab === "stroke" ? "btn-primary" : ""}`}
+              onClick={() => {
+                setActiveTab("stroke");
+              }}
+            >
+              Bordure
+            </button>
+            <button
+              className={`btn w-1/3 ${activeTab === "background" ? "btn-primary" : ""}`}
+              onClick={() => {
+                setActiveTab("background");
+              }}
+            >
+              Arrière-plan
+            </button>
+            <button
+              className={`btn w-1/3 ${activeTab === "fill" ? "btn-primary" : ""}`}
+              onClick={() => {
+                setActiveTab("fill");
+              }}
+            >
+              Remplissage
+            </button>
+          </div>
+
+          <div>
+            {activeTab === "stroke" && (
+              <ColorPicker
+                color={iconStrokeColor}
+                onColorChange={setIconStrokeColor}
+                allowGradient={false}
+              />
+            )}
+
+            {activeTab === "background" && (
+              <ColorPicker
+                color={backgroundColor}
+                onColorChange={setBackgroundColor}
+                allowGradient={true}
+              />
+            )}
+
+            {activeTab === "fill" && (
+              <ColorPicker
+                color={fillColor}
+                onColorChange={setFillColor}
+                allowGradient={false}
+              />
+            )}
+          </div>
+        </div>
+
         <div
           className="md:w-2/4 flex justify-center items-center h-screen bg-cover bg-center border border-base-200 pt-4 relative"
           style={{ backgroundImage: "url('/file.svg')" }}
@@ -86,6 +148,9 @@ export default function Home() {
                   size={iconSize}
                   style={{
                     display: "block",
+                    fill: fillColor,
+                    backgroundColor: backgroundColor,
+                    stroke: iconStrokeColor,
                     strokeWidth: iconStrokeWidth,
                     transform: `rotate(${iconRotation}deg)`,
                   }}
@@ -119,7 +184,7 @@ export default function Home() {
           <div className="mt-4">
             <div className="flex justify-between mb-3">
               <label className="badge badge-ghost">Bordure</label>
-              <span>{iconSize} px</span>
+              <span>{iconStrokeWidth}</span>
             </div>
 
             <input
