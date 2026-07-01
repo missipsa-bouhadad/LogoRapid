@@ -51,6 +51,10 @@ export default function Home() {
     }
   };
 
+  const getBackgroundStyle = () => {
+    return backgroundColor.startsWith("linear-gradient") ? {background: backgroundColor} : {backgroundColor: backgroundColor}
+  }
+
   return (
     <div>
       <section className="flex flex-col md:flex-row md:justify-between">
@@ -141,7 +145,7 @@ export default function Home() {
             <div
               id="iconContainer"
               className={`w-112.5 h-112.5 flex justify-center items-center ${shadow}`}
-              style={{ borderRadius: `${radius}px` }}
+              style={{ borderRadius: `${radius}px`, ...getBackgroundStyle()}}
             >
               {SelectedIconComponent && (
                 <SelectedIconComponent
@@ -149,7 +153,6 @@ export default function Home() {
                   style={{
                     display: "block",
                     fill: fillColor,
-                    backgroundColor: backgroundColor,
                     stroke: iconStrokeColor,
                     strokeWidth: iconStrokeWidth,
                     transform: `rotate(${iconRotation}deg)`,
