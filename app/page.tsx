@@ -5,6 +5,7 @@ import { useState } from "react";
 import IconPicker from "./components/IconPicker";
 import { Download, icons } from "lucide-react";
 import ColorPicker from "./components/ColorPicker";
+import React from "react";
 
 type IconName = keyof typeof icons;
 
@@ -52,8 +53,162 @@ export default function Home() {
   };
 
   const getBackgroundStyle = () => {
-    return backgroundColor.startsWith("linear-gradient") ? {background: backgroundColor} : {backgroundColor: backgroundColor}
-  }
+    return backgroundColor.startsWith("linear-gradient")
+      ? { background: backgroundColor }
+      : { backgroundColor: backgroundColor };
+  };
+
+  const getBackgroundPresetStyle = (color: string) => {
+    return color.startsWith("linear-gradient")
+      ? { background: color }
+      : { backgroundColor: color };
+  };
+
+  const handlePresetSelected = (logoPreset: typeof logoPresets[0]) => {
+    setSelectedIcon(logoPreset.icon)
+    setIconSize(logoPreset.iconSize);
+    setIconStrokeWidth(logoPreset.iconStrokeWidth);
+    setIconRotation(logoPreset.iconRotation);
+    setRadius(logoPreset.radius*7);
+    setIconStrokeColor(logoPreset.iconStrokeColor);
+    setBackgroundColor(logoPreset.backgroundColor);
+    setFillColor(logoPreset.fillColor);
+  };
+
+  const logoPresets = [
+    {
+      id: 1,
+      backgroundColor: "linear-gradient(45deg, #11998e 0%, #38ef7d 100%)",
+      radius: 14,
+      fillColor: "#ffffff",
+      iconRotation: 45,
+      iconStrokeColor: "#11998e",
+      iconStrokeWidth: 3,
+      iconSize: 210,
+      icon: "Rocket",
+    },
+    {
+      id: 2,
+      backgroundColor: "linear-gradient(45deg, #8e2de2 0%, #4a00e0 100%)",
+      radius: 20,
+      fillColor: "#f1c40f",
+      iconRotation: 0,
+      iconStrokeColor: "#ffffff",
+      iconStrokeWidth: 2,
+      iconSize: 240,
+      icon: "Sparkles",
+    },
+    {
+      id: 3,
+      backgroundColor: "linear-gradient(45deg, #ff416c 0%, #ff4b2b 100%)",
+      radius: 10,
+      fillColor: "transparent",
+      iconRotation: 15,
+      iconStrokeColor: "#ffffff",
+      iconStrokeWidth: 4,
+      iconSize: 200,
+      icon: "Shield",
+    },
+    {
+      id: 4,
+      backgroundColor: "linear-gradient(45deg, #1f4037 0%, #99f2c8 100%)",
+      radius: 32,
+      fillColor: "#1f4037",
+      iconRotation: -30,
+      iconStrokeColor: "#ffffff",
+      iconStrokeWidth: 3,
+      iconSize: 260,
+      icon: "Flame",
+    },
+    {
+      id: 5,
+      backgroundColor: "linear-gradient(45deg, #ffe259 0%, #ffa751 100%)",
+      radius: 24,
+      fillColor: "#ffffff",
+      iconRotation: 90,
+      iconStrokeColor: "#d35400",
+      iconStrokeWidth: 3,
+      iconSize: 230,
+      icon: "Crown",
+    },
+    {
+      id: 6,
+      backgroundColor: "#130f40",
+      radius: 16,
+      fillColor: "#e74c3c",
+      iconRotation: 60,
+      iconStrokeColor: "#ffffff",
+      iconStrokeWidth: 2,
+      iconSize: 250,
+      icon: "Compass",
+    },
+    {
+      id: 7,
+      backgroundColor: "linear-gradient(45deg, #00c6ff 0%, #0072ff 100%)",
+      radius: 50,
+      fillColor: "#00c6ff",
+      iconRotation: 120,
+      iconStrokeColor: "#ffffff",
+      iconStrokeWidth: 4,
+      iconSize: 220,
+      icon: "Cpu",
+    },
+    {
+      id: 8,
+      backgroundColor: "#2c3e50",
+      radius: 12,
+      fillColor: "transparent",
+      iconRotation: -45,
+      iconStrokeColor: "#1abc9c",
+      iconStrokeWidth: 3,
+      iconSize: 215,
+      icon: "Globe",
+    },
+    {
+      id: 9,
+      backgroundColor: "#ff7675",
+      radius: 30,
+      fillColor: "#2d3436",
+      iconRotation: 0,
+      iconStrokeColor: "#ffffff",
+      iconStrokeWidth: 4,
+      iconSize: 270,
+      icon: "TrendingUp",
+    },
+    {
+      id: 10,
+      backgroundColor: "linear-gradient(45deg, #f857a6 0%, #ff5858 100%)",
+      radius: 18,
+      fillColor: "#ffffff",
+      iconRotation: 10,
+      iconStrokeColor: "#2c3e50",
+      iconStrokeWidth: 2,
+      iconSize: 235,
+      icon: "Briefcase",
+    },
+    {
+      id: 11,
+      backgroundColor: "#6c5ce7",
+      radius: 45,
+      fillColor: "#fdcb6e",
+      iconRotation: -15,
+      iconStrokeColor: "#ffffff",
+      iconStrokeWidth: 3,
+      iconSize: 280,
+      icon: "Gift",
+    },
+    {
+      id: 12,
+      backgroundColor: "#2ed573",
+      radius: 8,
+      fillColor: "#ffffff",
+      iconRotation: 180,
+      iconStrokeColor: "#2f3542",
+      iconStrokeWidth: 3,
+      iconSize: 245,
+      icon: "Lightbulb",
+    },
+  ];
 
   return (
     <div>
@@ -145,7 +300,7 @@ export default function Home() {
             <div
               id="iconContainer"
               className={`w-112.5 h-112.5 flex justify-center items-center ${shadow}`}
-              style={{ borderRadius: `${radius}px`, ...getBackgroundStyle()}}
+              style={{ borderRadius: `${radius}px`, ...getBackgroundStyle() }}
             >
               {SelectedIconComponent && (
                 <SelectedIconComponent
@@ -176,7 +331,7 @@ export default function Home() {
               min="95"
               max="300"
               value={iconSize}
-              className="range range-primary"
+              className="range range-primary w-full"
               onChange={(e) => {
                 setIconSize(Number(e.target.value));
               }}
@@ -195,7 +350,7 @@ export default function Home() {
               min="1"
               max="4"
               value={iconStrokeWidth}
-              className="range range-primary"
+              className="range range-primary w-full"
               onChange={(e) => {
                 setIconStrokeWidth(Number(e.target.value));
               }}
@@ -214,7 +369,7 @@ export default function Home() {
               min="0"
               max="360"
               value={iconRotation}
-              className="range range-primary"
+              className="range range-primary w-full"
               onChange={(e) => {
                 setIconRotation(Number(e.target.value));
               }}
@@ -234,7 +389,7 @@ export default function Home() {
               max="100"
               step={20}
               value={shadowNumber}
-              className="range range-primary"
+              className="range range-primary w-full"
               onChange={handleShadowNumberChange}
             />
           </div>
@@ -251,11 +406,46 @@ export default function Home() {
               min="0"
               max="300"
               value={radius}
-              className="range range-primary"
+              className="range range-primary w-full"
               onChange={(e) => {
                 setRadius(Number(e.target.value));
               }}
             />
+          </div>
+
+          <div className="mt-5">
+            <h1 className="font-bold text-lg mb-4">Préréglages</h1>
+
+            <div className="flex flex-wrap gap-2 justify-center">
+              {logoPresets.map((logoPreset) => (
+                <div
+                  key={logoPreset.id}
+                  className="cursor-pointer"
+                  onClick={() => handlePresetSelected(logoPreset)}
+                >
+                  <div
+                    id="iconContainer"
+                    className={"w-16 h-16 flex justify-center items-center"}
+                    style={{
+                      borderRadius: `${logoPreset.radius}px`,
+                      ...getBackgroundPresetStyle(logoPreset.backgroundColor),
+                    }}
+                  >
+                    {icons[logoPreset.icon as IconName] &&
+                      React.createElement(icons[logoPreset.icon as IconName], {
+                        size: 30,
+                        style: {
+                          display: "block",
+                          fill: logoPreset.fillColor,
+                          stroke: logoPreset.iconStrokeColor,
+                          strokeWidth: logoPreset.iconStrokeWidth,
+                          transform: `rotate(${logoPreset.iconRotation}deg)`,
+                        },
+                      })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

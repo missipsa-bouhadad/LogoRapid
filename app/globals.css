@@ -2,3 +2,7 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, cupcake;
 }
+
+#rbgcp-color-picker-dark {
+  background-color: #FAF7F5;
+}
