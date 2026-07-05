@@ -6,6 +6,7 @@ import IconPicker from "./components/IconPicker";
 import { Download, icons } from "lucide-react";
 import ColorPicker from "./components/ColorPicker";
 import React from "react";
+import { toPng, toSvg } from "html-to-image";
 
 type IconName = keyof typeof icons;
 
@@ -27,6 +28,8 @@ export default function Home() {
   const [iconStrokeColor, setIconStrokeColor] = useState<string>("#260707");
   const [backgroundColor, setBackgroundColor] = useState<string>("#535F78");
   const [fillColor, setFillColor] = useState<string>("#DEDEDE");
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [downloadCompleted, setDownloadCompleted] = useState<boolean>(false);
 
   const handleShadowNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -64,15 +67,43 @@ export default function Home() {
       : { backgroundColor: color };
   };
 
-  const handlePresetSelected = (logoPreset: typeof logoPresets[0]) => {
-    setSelectedIcon(logoPreset.icon)
+  const handlePresetSelected = (logoPreset: (typeof logoPresets)[0]) => {
+    setSelectedIcon(logoPreset.icon);
     setIconSize(logoPreset.iconSize);
     setIconStrokeWidth(logoPreset.iconStrokeWidth);
     setIconRotation(logoPreset.iconRotation);
-    setRadius(logoPreset.radius*7);
+    setRadius(logoPreset.radius * 7);
     setIconStrokeColor(logoPreset.iconStrokeColor);
     setBackgroundColor(logoPreset.backgroundColor);
     setFillColor(logoPreset.fillColor);
+  };
+
+  const handleDownloadImage = (format: "png" | "svg") => {
+    setIsDownloading(true);
+    setDownloadCompleted(false);
+    const element = document.getElementById("iconContainer");
+    if (element) {
+      let imagePromise;
+      if (format == "svg") {
+        imagePromise = toSvg(element, { cacheBust: true });
+      } else {
+        imagePromise = toPng(element, { cacheBust: true, pixelRatio: 2 });
+      }
+
+      imagePromise
+        .then((dataUrl: string) => {
+          const link = document.createElement("a");
+          link.href = dataUrl;
+          link.download = `logo.${format}`;
+          link.click();
+          setDownloadCompleted(true);
+          setIsDownloading(false);
+        })
+        .catch((error: any) => {
+          console.log(error);
+          setIsDownloading(false);
+        });
+    }
   };
 
   const logoPresets = [
@@ -276,7 +307,7 @@ export default function Home() {
           <div className="flex w-full justify-between p-3 z-50 absolute top-0 left-0 bg-base-100">
             <div className="flex items-center italic font-bold text-2xl">
               <Image
-                src="/logo.png"
+                src="/logo_app.png"
                 alt="logo"
                 width={800}
                 height={800}
@@ -289,9 +320,60 @@ export default function Home() {
                 onIconSelect={setSelectedIcon}
                 selected={selectedIcon}
               />
-              <button className="btn ml-4">
+              <button
+                className="btn ml-4"
+                onClick={() => {
+                  const modal = document.getElementById(
+                    "my_modal_1",
+                  ) as HTMLDialogElement;
+
+                  if (modal) {
+                    modal.showModal();
+                    setDownloadCompleted(false)
+                  }
+                }}
+              >
                 Télécharger <Download className="w-4" />{" "}
               </button>
+              <dialog id="my_modal_1" className="modal">
+                <div className="modal-box">
+                  <form method="dialog">
+                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                      ✕
+                    </button>
+                  </form>
+
+                  {isDownloading ? (
+                    <div className="flex justify-center">
+                      <progress className="progress progress-primary w-full"></progress>
+                    </div>
+                  ) : downloadCompleted ? (
+                    <div className="flex justify-center text-center">
+                      <p className="text-lg font-bold">Le téléchargement a été terminé avec succés !</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <h3 className="font-bold text-lg text-center mb-4">
+                        Choisisez un format{" "}
+                      </h3>
+                      <div className="space-x-3 flex justify-center">
+                        <button
+                          className="btn"
+                          onClick={() => handleDownloadImage("png")}
+                        >
+                          PNG
+                        </button>
+                        <button
+                          className="btn"
+                          onClick={() => handleDownloadImage("svg")}
+                        >
+                          SVG
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </dialog>
             </div>
           </div>
 
@@ -424,7 +506,6 @@ export default function Home() {
                   onClick={() => handlePresetSelected(logoPreset)}
                 >
                   <div
-                    id="iconContainer"
                     className={"w-16 h-16 flex justify-center items-center"}
                     style={{
                       borderRadius: `${logoPreset.radius}px`,
